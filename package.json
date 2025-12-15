@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/rakhi890rs/ai-chatbot#readme",
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "socket.io": "^4.8.1"
   }
 }
