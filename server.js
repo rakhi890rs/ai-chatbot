@@ -1,17 +1,40 @@
-const app = require('./src/app');
-const { createServer } = require('http');  //conver ur express into http server,needed when using socket.io
-const { Server } = require('socket.io');  // import
+const http = require("http");
+const { Server } = require("socket.io");
+require("dotenv").config();
 
+const app = require("./src/app");
+const { generateResponse } = require("./src/service/ai.service");
 
+const server = http.createServer(app);
 
-const httpServer = createServer(app);  // wrap ur express inside http server
+const io = new Server(server, {
+  cors: {
+    origin: "*"
+  }
+});
 
-const io = new Server(httpServer);  // creates a socket.io server
+io.on("connection", (socket) => {
+  console.log("User connected:", socket.id);
 
-io.on('connection',(socket)=>{
-    console.log("User connected:", socket.id); // socket.id = unique id created by the socket.io
+  socket.on("prompt", async (data) => {
+    try {
+      console.log("Prompt received:", data.prompt);
 
-})
-httpServer.listen(3000,()=>{       //Starts your server on port 3000
-    console.log("server is running")
-})
+      const reply = await generateResponse(data.prompt);
+
+      socket.emit("response", { reply });
+    } catch (error) {
+      socket.emit("response", {
+        reply: "AI is busy. Please try again later."
+      });
+    }
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected:", socket.id);
+  });
+});
+
+server.listen(3000, () => {
+  console.log("Server is running on port 3000");
+});
