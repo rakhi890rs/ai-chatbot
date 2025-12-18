@@ -1,33 +1,28 @@
+require("dotenv").config();
 const http = require("http");
 const { Server } = require("socket.io");
-require("dotenv").config();
-
 const app = require("./src/app");
 const { generateResponse } = require("./src/service/ai.service");
-
 const server = http.createServer(app);
-
-const io = new Server(server, {
-  cors: {
-    origin: "*"
-  }
-});
+const io = new Server(server,);
 
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
 
+  const chatHistory=[];
   socket.on("prompt", async (data) => {
-    try {
       console.log("Prompt received:", data.prompt);
-
+      chatHistory.push({
+      role: "user",
+      parts: [{ text: data.prompt }]
+    });
       const reply = await generateResponse(data.prompt);
-
+      chatHistory.push({
+      role: "model",
+      parts: [{ text: reply }]
+    });
       socket.emit("response", { reply });
-    } catch (error) {
-      socket.emit("response", {
-        reply: "AI is busy. Please try again later."
-      });
-    }
+    
   });
 
   socket.on("disconnect", () => {
@@ -38,3 +33,10 @@ io.on("connection", (socket) => {
 server.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
+
+
+
+// io=server
+// socket=single user
+// on=listen event
+// emit=fire event

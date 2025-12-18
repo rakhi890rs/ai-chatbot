@@ -10,9 +10,12 @@ async function generateResponse(userPrompt) {
   try {
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
-      contents: [
-        { role: "user", parts: [{ text: userPrompt }] }
-      ],
+       contents: chatHistory,
+       //[
+      //   { role: "user", parts: [{ text: userPrompt }] }
+      // ]
+      
+
       config: {
         systemInstruction: `
           You are a friendly chatbot.
