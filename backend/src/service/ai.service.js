@@ -4,8 +4,8 @@ require("dotenv").config();
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY
 });
-async function generateResponse(userPrompt) {
-  console.log("Sending prompt to AI:", userPrompt);
+async function generateResponse(chatHistory) {
+  console.log("Sending prompt to AI:", chatHistory );
 
   try {
     const response = await ai.models.generateContent({
