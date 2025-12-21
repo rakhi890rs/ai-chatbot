@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:3000"); // backend URL
+const socket = io("https://ai-chatbot-2-no8b.onrender.com"); // backend URL
 
 const Chat = () => {
   const [message, setMessage] = useState("");
